@@ -1,0 +1,70 @@
+
+This project is a file upload API implemented using FastAPI. It provides an endpoint to upload text files and determine a secret code based on the content of the file.
+
+Installation
+------------
+
+1.  Clone the repository:
+    
+    
+    
+    `git clone <repository_url> cd <project_directory>`
+    
+2.  Create a virtual environment (optional but recommended):
+    
+    
+    
+    `python3 -m venv venv source venv/bin/activate`
+    
+3.  Install the required dependencies:
+    
+    
+    
+    `pip install -r requirements.txt`
+    
+
+Usage
+-----
+
+1.  Run the application:
+    
+    
+    
+    `uvicorn main:app --reload`
+    
+2.  Open your web browser and navigate to [http://localhost:8000/docs](http://localhost:8000/docs) to access the API documentation (Swagger UI).
+    
+3.  Use the `/upload/` endpoint to upload a text file:
+    
+    *   Method: POST
+    *   Endpoint: `http://localhost:8000/upload/`
+    *   Request body:
+        *   `file` (type: file) - The text file to upload
+4.  The API will validate the file format and content. If the file is valid (ends with `.txt` and contains lines with exactly 3 characters), it will determine the secret code and return a JSON response:
+    
+    jsonCopy code
+    
+    `{     "filename": "example.txt",     "secret_code": "ABC..." }`
+    
+    If the file is invalid, the API will return an appropriate error message.
+    
+
+* * *
+
+Algorithm Logic
+---------------
+
+The algorithm for determining the secret code is implemented in the `determine_secret_code` function. Here is a technical explanation of the logic:
+
+1.  Create a directed graph where each character in the lines of the text file represents a node. Each node is connected to all nodes that can follow it in the file.
+    
+2.  Find all nodes that have no incoming edges (i.e., nodes that do not appear as the next character in any line). These nodes will be the potential start nodes for the secret code.
+    
+3.  Ensure that there is exactly one start node. If there are multiple start nodes or no start nodes, the input file is invalid.
+    
+4.  Perform a depth-first search (DFS) starting from the selected start node to find the shortest path that visits all nodes in the graph. This will be the secret code.
+    
+5.  Return the secret code as a string.
+    
+
+The algorithm guarantees that the secret code will be the shortest path that visits all nodes, considering the connections between characters in the text file.
